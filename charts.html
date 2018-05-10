@@ -1,0 +1,204 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart</title>
+  <meta name="viewport" content="width=device-width">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+</head>
+
+<style>
+body {
+     line-height: 0;
+     margin: 0px;
+     padding-top: 0px;
+     max-width:2000px;
+     width: 100%;
+ }
+ .container{
+   height: 50px;
+   width: 400px;
+
+ }
+ .marg{
+   margin-top: 350px;
+ }
+</style>
+
+<body>
+  <div class="container">
+    <canvas id="myChart" width="400" height="400"></canvas>
+  </div>
+  <div class="marg"></div>
+  <div class="container">
+    <canvas id="chartMovil" width="400" height="400"></canvas>
+  </div>
+</body>
+
+<script>
+//https://cdnjs.com/libraries/Chart.js/2.7.2
+//https://www.datos.gov.co/resource/nw24-kcmy.json?$limit=1000000
+//96920
+var data = [];
+var blanca =0;
+var arma = [0,0,0,0,0,0,0,0,0]; //blanca,fuego,sin arma,contundentes,palancas,llave maestra,escopolamina,SUSTANCIAS toxicas,otros.
+var moviliAgresor = [0,0,0,0,0,0,0,0,0,0]; // A pie, CONDUCTOR MOTOCICLETA,PASAJERO BUS,PASAJERO MOTOCICLETA,CONDUCTOR VEHICULO,PASAJERO VEHICULO
+                                  //PASAJERO TAXI,CONDUCTOR TAXI,BICICLETA
+var total = 0;
+fetch('hurtoJSON.json').then(res => res.json()).then(json => {
+   data = json;
+   console.log(data);
+   console.log(data[0]);
+   console.log(data[0].arma_empleada);
+   console.log(data[0].barrio);
+   if(data[0].m_vil_agresor=='A PIE'){console.log('true');
+
+   for(var p of data){
+     //Armas
+       if(p.arma_empleada=='ARMA BLANCA / CORTOPUNZANTE'){
+          arma[0]++;
+       }
+       else if(p.arma_empleada=='ARMA DE FUEGO'){
+          arma[1]++;
+       }
+       else if(p.arma_empleada=='SIN EMPLEO DE ARMAS'){
+          arma[2]++;
+       }
+       else if(p.arma_empleada=='CONTUNDENTES'){
+          arma[3]++;
+       }
+       else if(p.arma_empleada=='PALANCAS'){
+          arma[4]++;
+       }
+       else if(p.arma_empleada=='LLAVE MAESTRA'){
+          arma[5]++;
+       }
+       else if(p.arma_empleada=='ESCOPOLAMINA'){
+          arma[6]++;
+       }
+       else if(p.arma_empleada=='SUSTANCIAS TOXICAS'){
+          arma[7]++;
+       }
+       else{
+          arma[8]++;
+        }
+      //Movil agresor
+       if(p.m_vil_agresor=='A PIE'){
+         moviliAgresor[0]++;
+       }
+       else if(p.m_vil_agresor=='CONDUCTOR MOTOCICLETA'){
+        moviliAgresor[1]++;
+       }
+       else if(p.m_vil_agresor=='PASAJERO BUS'){
+        moviliAgresor[2]++;
+       }
+       else if(p.m_vil_agresor=='PASAJERO MOTOCICLETA'){
+        moviliAgresor[3]++;
+       }
+       else if(p.m_vil_agresor=='CONDUCTOR VEHICULO'){
+        moviliAgresor[4]++;
+       }
+       else if(p.m_vil_agresor=='PASAJERO VEHICULO'){
+        moviliAgresor[5]++;
+       }
+       else if(p.m_vil_agresor=='PASAJERO TAXI'){
+        moviliAgresor[6]++;
+       }
+       else if(p.m_vil_agresor=='CONDUCTOR TAXI'){
+        moviliAgresor[7]++;
+       }
+       else if(p.m_vil_agresor=='BICICLETA'){
+        moviliAgresor[8]++;
+       }
+       else{
+        moviliAgresor[9]++;
+       }
+
+     }
+   }
+   total = arma[0]+arma[1]+arma[2]+arma[3]+arma[4]+arma[5]+arma[6]+arma[7]+arma[8];
+
+   console.log(total);
+   drawChartArmas();
+   drawChartMovil();
+ });
+
+function drawChartArmas(){
+  var ctx = document.getElementById("myChart").getContext('2d');
+  var chart = new Chart(ctx,{
+      type:'pie',
+      data: {
+          labels: ["ARMA BLANCA / CORTOPUNZANTE", "ARMA DE FUEGO", "SIN EMPLEO DE ARMAS", "CONTUNDENTES",
+                   "PALANCAS", "LLAVE MAESTRA","ESCOPOLAMINA","SUSTANCIAS TOXICAS","OTROS" ],
+          datasets:[{
+                   label: 'Arma utilizada',
+                   data: [arma[0], arma[1], arma[2],arma[3], arma[4], arma[5],arma[6],arma[7],arma[8]],
+                   backgroundColor: [
+                   'rgba(255, 99, 132, 0.2)',
+                   'rgba(54, 162, 235, 0.2)',
+                   'rgba(255, 206, 86, 0.2)',
+                   'rgba(75, 192, 192, 0.2)',
+                   'rgba(253, 12, 185, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(255, 159, 64, 0.2)'
+                    ],
+                   }]
+
+      },
+      options:{
+        //maintainAspectRatio: false,
+        responsive: true,
+        title:{display:true,
+              text:'ARMA EMPLEADA',
+              fontSize: 25
+              }
+      }
+    });
+
+}
+
+
+function drawChartMovil(){
+  var ctx = document.getElementById("chartMovil").getContext('2d');
+  var chart = new Chart(ctx,{
+      type:'doughnut',
+      data: {
+          labels: ["A pie", "CONDUCTOR MOTOCICLETA", "PASAJERO MOTOCICLETA", "CONDUCTOR VEHICULO",
+                   "PASAJERO VEHICULO", "PASAJERO BUS","CONDUCTOR TAXI","PASAJERO TAXI","BICICLETA","OTROS" ],
+          datasets:[{
+                   label: 'Como',
+                   data: [moviliAgresor[0],moviliAgresor[1],moviliAgresor[2], moviliAgresor[3],moviliAgresor[4],moviliAgresor[5],
+                    moviliAgresor[6],moviliAgresor[7],moviliAgresor[8],moviliAgresor[9]],
+                   backgroundColor: [
+                   'rgba(255, 99, 132, 0.2)',
+                   'rgba(54, 162, 235, 0.2)',
+                   'rgba(255, 206, 86, 0.2)',
+                   'rgba(75, 192, 192, 0.2)',
+                   'rgba(253, 12, 185, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(255, 159, 64, 0.2)'
+                    ],
+                   }]
+
+      },
+      options:{
+        //maintainAspectRatio: false,
+        responsive: true,
+        title:{display:true,
+              text:'COMO SE MOVILIZABA EL AGRESOR',
+              fontSize: 25
+              }
+      }
+    });
+}
+</script>
