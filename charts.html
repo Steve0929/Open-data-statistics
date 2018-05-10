@@ -52,7 +52,7 @@ var arma = [0,0,0,0,0,0,0,0,0]; //blanca,fuego,sin arma,contundentes,palancas,ll
 var moviliAgresor = [0,0,0,0,0,0,0,0,0,0]; // A pie, CONDUCTOR MOTOCICLETA,PASAJERO BUS,PASAJERO MOTOCICLETA,CONDUCTOR VEHICULO,PASAJERO VEHICULO
                                   //PASAJERO TAXI,CONDUCTOR TAXI,BICICLETA
 var total = 0;
-fetch('hurtoJSON.json').then(res => res.json()).then(json => {
+fetch('https://www.datos.gov.co/resource/nw24-kcmy.json?$limit=97000').then(res => res.json()).then(json => {
    data = json;
    console.log(data);
    console.log(data[0]);
